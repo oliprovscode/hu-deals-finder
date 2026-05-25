@@ -3,33 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HU Deals — Find the Best Prices in Hungary</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>PricePulse HU - Best Tech & Electronics Deals in Hungary</title>
+  <meta name="description" content="Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more Hungarian electronics stores. Find the biggest discounts updated daily. Free and open source." />
+  <meta name="keywords" content="Hungary deals, akció, Alza Hungary, MediaMarkt Hungary, eMAG deals, electronics price comparison, tech deals HU" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="PricePulse HU - Tech Deals in Hungary" />
+  <meta property="og:description" content="Open source price comparison for Hungarian electronics shops. Alza, MediaMarkt, eMAG and more." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="PricePulse HU" />
+  <meta name="twitter:description" content="Open source tech deal finder for Hungarian shops." />
+  <link rel="canonical" href="https://pricepulse-hu.vercel.app/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-  <!-- NAV -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="/" class="nav-logo">HU<span>Deals</span></a>
+      <a href="/" class="nav-logo">PricePulse <span>HU</span></a>
       <div class="nav-links">
         <a href="#deals" class="nav-link">Deals</a>
         <a href="#watchlist" class="nav-link">Watchlist</a>
         <a href="#stores" class="nav-link">Stores</a>
+        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="nav-github" aria-label="View on GitHub">
+          <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
       </div>
     </div>
   </nav>
 
-  <!-- HERO -->
   <header class="hero">
     <div class="container">
-      <div class="hero-badge">🇭🇺 Hungary Only</div>
+      <div class="hero-eyebrow">
+        <span class="hero-badge">Hungary Only</span>
+        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="oss-badge">Open Source</a>
+      </div>
       <h1 class="hero-title">Find the best tech deals<br>across Hungarian shops</h1>
-      <p class="hero-sub">Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more — all in one place.</p>
+      <p class="hero-sub">Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more — all in one place. Free, open source, no tracking.</p>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search for a product…" />
+        <input type="text" id="searchInput" placeholder="Search products, brands, categories..." autocomplete="off" />
         <button onclick="searchDeals()" class="btn-primary">Search</button>
       </div>
       <div class="filter-row">
@@ -44,7 +60,6 @@
     </div>
   </header>
 
-  <!-- STORE BADGES -->
   <section id="stores" class="stores-section">
     <div class="container">
       <h2 class="section-title">Tracked stores</h2>
@@ -53,7 +68,7 @@
         <div class="store-badge"><span class="store-dot green"></span>MediaMarkt.hu</div>
         <div class="store-badge"><span class="store-dot green"></span>eMAG.hu</div>
         <div class="store-badge"><span class="store-dot green"></span>Extreme Digital</div>
-        <div class="store-badge"><span class="store-dot green"></span>Árukereső.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>Arukereso.hu</div>
         <div class="store-badge"><span class="store-dot yellow"></span>iStyle.hu</div>
         <div class="store-badge"><span class="store-dot yellow"></span>Euronics.hu</div>
         <div class="store-badge"><span class="store-dot yellow"></span>Notebookspecialista</div>
@@ -61,13 +76,12 @@
     </div>
   </section>
 
-  <!-- DEALS GRID -->
   <section id="deals" class="deals-section">
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Today's best deals</h2>
         <div class="sort-row">
-          <label>Sort by:</label>
+          <label for="sortSelect">Sort by:</label>
           <select id="sortSelect" onchange="sortDeals()">
             <option value="discount">Biggest discount</option>
             <option value="price-asc">Price: Low to High</option>
@@ -79,29 +93,55 @@
     </div>
   </section>
 
-  <!-- WATCHLIST -->
   <section id="watchlist" class="watchlist-section">
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Your watchlist</h2>
         <span class="watchlist-count" id="watchlistCount">0 items</span>
       </div>
-      <p class="watchlist-hint">Add products from above to track their prices. We'll show you when the price drops.</p>
+      <p class="watchlist-hint">Add products from above to track their prices. You will see when the price drops.</p>
       <div class="watchlist-grid" id="watchlistGrid">
-        <div class="watchlist-empty" id="watchlistEmpty">
-          <div class="empty-icon">📋</div>
-          <p>Your watchlist is empty.<br>Click "Watch" on any deal to start tracking.</p>
+        <div class="watchlist-empty">
+          <p>Your watchlist is empty. Click Watch on any deal to start tracking.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
+  <section class="oss-section">
+    <div class="container oss-inner">
+      <div class="oss-text">
+        <h2>Free and open source</h2>
+        <p>PricePulse HU is fully open source. Inspect the code, self-host it, or contribute improvements. No ads, no tracking, no paywall.</p>
+        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="btn-github">
+          <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="oss-stats">
+        <div class="oss-stat"><span class="stat-num">8</span><span class="stat-label">Stores tracked</span></div>
+        <div class="oss-stat"><span class="stat-num">Free</span><span class="stat-label">Always</span></div>
+        <div class="oss-stat"><span class="stat-num">0</span><span class="stat-label">Trackers</span></div>
+      </div>
+    </div>
+  </section>
+
   <footer class="footer">
     <div class="container footer-inner">
-      <span class="nav-logo">HU<span>Deals</span></span>
-      <p>Prices are fetched from public store listings. Not affiliated with any retailer.</p>
-      <p class="footer-small">Built for Hungarian shoppers · Data refreshed every 6h</p>
+      <div class="footer-left">
+        <span class="nav-logo">PricePulse <span>HU</span></span>
+        <p>Prices sourced from public store listings via Google Shopping. Not affiliated with any retailer.</p>
+        <p class="footer-small">Built for Hungarian shoppers. Data refreshed every 6 hours.</p>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="footer-github" aria-label="GitHub">
+          <svg height="22" width="22" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </footer>
 

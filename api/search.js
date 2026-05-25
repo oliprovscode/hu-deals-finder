@@ -1,8 +1,8 @@
 // Vercel Serverless Function — /api/search
-// Proxies SerpApi so the API key never appears in client-side code.
-// Set SERPAPI_KEY in the Vercel dashboard.
+// Uses CommonJS so Vercel Node runtime picks it up correctly.
+// Set SERPAPI_KEY in Vercel dashboard > Settings > Environment Variables.
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const key = process.env.SERPAPI_KEY;
   if (!key) {
     return res.status(500).json({ error: 'SERPAPI_KEY environment variable not set.' });
@@ -30,4 +30,4 @@ export default async function handler(req, res) {
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
-}
+};

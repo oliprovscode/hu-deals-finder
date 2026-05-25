@@ -1,0 +1,7 @@
+{
+  "name": "pricepulse-hu",
+  "version": "1.0.0",
+  "description": "Open source tech deal finder for Hungarian electronics stores",
+  "license": "MIT",
+  "engines": { "node": ">=18" }
+}

@@ -1,6 +1,6 @@
 // PricePulse HU — app.js
-// For self-hosted use, replace the placeholder below with your own SerpApi key
-// or set up the Vercel serverless proxy at /api/search.
+// Self-hosted: replace YOUR_SERPAPI_KEY_HERE with your key from https://serpapi.com
+// Deployed on Vercel: key is injected server-side via /api/search, never exposed here.
 
 const SERPAPI_KEY = 'YOUR_SERPAPI_KEY_HERE';
 
@@ -28,34 +28,36 @@ let searchQuery = '';
 async function fetchLiveDeals(query) {
   const q = query || 'akcio elektronika Hungary';
   try {
-    const proxyRes = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+    const proxyRes = await fetch('/api/search?q=' + encodeURIComponent(q));
     if (!proxyRes.ok) throw new Error('proxy unavailable');
     const proxyData = await proxyRes.json();
-    return parseSerpResults(proxyData);
+    const results = parseSerpResults(proxyData);
+    if (results.length) return results;
+    throw new Error('empty results');
   } catch (_) {
     if (SERPAPI_KEY === 'YOUR_SERPAPI_KEY_HERE') throw new Error('No API key');
-    const params = new URLSearchParams({ engine:'google_shopping', q, gl:'hu', hl:'hu', api_key: SERPAPI_KEY });
-    const res = await fetch(`https://serpapi.com/search.json?${params}`);
+    const params = new URLSearchParams({ engine: 'google_shopping', q, gl: 'hu', hl: 'hu', api_key: SERPAPI_KEY });
+    const res = await fetch('https://serpapi.com/search.json?' + params);
     const data = await res.json();
     return parseSerpResults(data);
   }
 }
 
 function parseSerpResults(data) {
-  return (data.shopping_results || []).slice(0, 30).map((item, i) => {
-    const price = parseFloat((item.price || '0').replace(/[^0-9.]/g, '')) || 0;
-    const original = parseFloat((item.old_price || '0').replace(/[^0-9.]/g, '')) || price;
-    const discount = original > price ? Math.round((1 - price / original) * 100) : 0;
+  return (data.shopping_results || []).slice(0, 30).map(function(item, i) {
+    var price = parseFloat((item.price || '0').replace(/[^0-9.]/g, '')) || 0;
+    var original = parseFloat((item.old_price || '0').replace(/[^0-9.]/g, '')) || price;
+    var discount = original > price ? Math.round((1 - price / original) * 100) : 0;
     return {
       id: 3000 + i,
       name: item.title || 'Product',
       store: item.source || 'Shop',
       category: mapCategory(item.product_type || ''),
-      price, original, discount,
+      price: price, original: original, discount: discount,
       img: item.thumbnail || 'https://placehold.co/280x140/f0f0ee/1a1a1a?text=No+Image',
       url: item.link || '#'
     };
-  }).filter(d => d.name && d.price > 0);
+  }).filter(function(d) { return d.name && d.price > 0; });
 }
 
 function mapCategory(s) {
@@ -63,48 +65,54 @@ function mapCategory(s) {
   if (s.includes('laptop') || s.includes('notebook')) return 'laptops';
   if (s.includes('mobil') || s.includes('phone') || s.includes('telefon')) return 'phones';
   if (s.includes('tv') || s.includes('tele')) return 'tvs';
-  if (s.includes('audio') || s.includes('speaker') || s.includes('headphone') || s.includes('fejhallgato')) return 'audio';
-  if (s.includes('gaming') || s.includes('game') || s.includes('jatek')) return 'gaming';
-  if (s.includes('appli') || s.includes('wash') || s.includes('haztartas')) return 'appliances';
+  if (s.includes('audio') || s.includes('speaker') || s.includes('headphone')) return 'audio';
+  if (s.includes('gaming') || s.includes('game')) return 'gaming';
+  if (s.includes('appli') || s.includes('wash')) return 'appliances';
   return 'all';
 }
 
 async function loadDeals() {
-  const grid = document.getElementById('dealsGrid');
+  var grid = document.getElementById('dealsGrid');
   grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;grid-column:1/-1;">Loading deals...</p>';
   try {
     DEALS = await fetchLiveDeals(searchQuery);
     if (!DEALS.length) DEALS = MOCK_DEALS;
-  } catch (e) {
+  } catch(e) {
     console.warn('[PricePulse] Live data unavailable, using sample data:', e.message);
     DEALS = MOCK_DEALS;
   }
   renderDeals();
 }
 
-function formatHUF(n) { return n.toLocaleString('hu-HU') + ' Ft'; }
+function formatHUF(n) {
+  return n.toLocaleString('hu-HU') + ' Ft';
+}
 
 function filteredDeals() {
-  let d = [...DEALS];
-  if (currentCategory !== 'all') d = d.filter(x => x.category === currentCategory || x.category === 'all');
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    d = d.filter(x => x.name.toLowerCase().includes(q) || x.store.toLowerCase().includes(q));
+  var d = DEALS.slice();
+  if (currentCategory !== 'all') {
+    d = d.filter(function(x) { return x.category === currentCategory || x.category === 'all'; });
   }
-  if (currentSort === 'discount') d.sort((a,b) => b.discount - a.discount);
-  if (currentSort === 'price-asc') d.sort((a,b) => a.price - b.price);
-  if (currentSort === 'price-desc') d.sort((a,b) => b.price - a.price);
+  if (searchQuery) {
+    var q = searchQuery.toLowerCase();
+    d = d.filter(function(x) { return x.name.toLowerCase().includes(q) || x.store.toLowerCase().includes(q); });
+  }
+  if (currentSort === 'discount') d.sort(function(a,b){ return b.discount - a.discount; });
+  if (currentSort === 'price-asc') d.sort(function(a,b){ return a.price - b.price; });
+  if (currentSort === 'price-desc') d.sort(function(a,b){ return b.price - a.price; });
   return d;
 }
 
-function isWatched(id) { return watchlist.some(w => w.id === id); }
+function isWatched(id) {
+  return watchlist.some(function(w){ return w.id === id; });
+}
 
 function toggleWatch(id) {
   if (isWatched(id)) {
-    watchlist = watchlist.filter(w => w.id !== id);
+    watchlist = watchlist.filter(function(w){ return w.id !== id; });
   } else {
-    const deal = DEALS.find(d => d.id === id);
-    if (deal) watchlist.push({ ...deal, addedAt: new Date().toISOString() });
+    var deal = DEALS.find(function(d){ return d.id === id; });
+    if (deal) watchlist.push(Object.assign({}, deal, { addedAt: new Date().toISOString() }));
   }
   localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
   renderDeals();
@@ -112,60 +120,60 @@ function toggleWatch(id) {
 }
 
 function removeFromWatchlist(id) {
-  watchlist = watchlist.filter(w => w.id !== id);
+  watchlist = watchlist.filter(function(w){ return w.id !== id; });
   localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
   renderDeals();
   renderWatchlist();
 }
 
 function renderDeals() {
-  const grid = document.getElementById('dealsGrid');
-  const deals = filteredDeals();
+  var grid = document.getElementById('dealsGrid');
+  var deals = filteredDeals();
   if (!deals.length) {
     grid.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem;grid-column:1/-1;">No deals found. Try a different search or category.</p>';
     return;
   }
-  grid.innerHTML = deals.map(d => `
-    <div class="deal-card" data-id="${d.id}">
-      ${d.discount > 0 ? `<span class="deal-badge">-${d.discount}%</span>` : ''}
-      <img class="deal-img" src="${d.img}" alt="${d.name}" loading="lazy" onerror="this.src='https://placehold.co/280x140/f0f0ee/1a1a1a?text=No+Image'" />
-      <div class="deal-store">${d.store}</div>
-      <div class="deal-name">${d.name}</div>
-      <div class="deal-pricing">
-        <span class="deal-price">${formatHUF(d.price)}</span>
-        ${d.original > d.price ? `<span class="deal-original">${formatHUF(d.original)}</span>` : ''}
-      </div>
-      <div class="deal-actions">
-        <a href="${d.url}" target="_blank" rel="noopener" class="btn-secondary">View Deal</a>
-        <button class="btn-watch ${isWatched(d.id) ? 'watching' : ''}" onclick="toggleWatch(${d.id})">
-          ${isWatched(d.id) ? 'Watching' : 'Watch'}
-        </button>
-      </div>
-    </div>
-  `).join('');
+  grid.innerHTML = deals.map(function(d) {
+    return '<div class="deal-card" data-id="' + d.id + '">' +
+      (d.discount > 0 ? '<span class="deal-badge">-' + d.discount + '%</span>' : '') +
+      '<img class="deal-img" src="' + d.img + '" alt="' + d.name + '" loading="lazy" onerror="this.src=\'https://placehold.co/280x140/f0f0ee/1a1a1a?text=No+Image\'" />' +
+      '<div class="deal-store">' + d.store + '</div>' +
+      '<div class="deal-name">' + d.name + '</div>' +
+      '<div class="deal-pricing">' +
+        '<span class="deal-price">' + formatHUF(d.price) + '</span>' +
+        (d.original > d.price ? '<span class="deal-original">' + formatHUF(d.original) + '</span>' : '') +
+      '</div>' +
+      '<div class="deal-actions">' +
+        '<a href="' + d.url + '" target="_blank" rel="noopener" class="btn-secondary">View Deal</a>' +
+        '<button class="btn-watch' + (isWatched(d.id) ? ' watching' : '') + '" onclick="toggleWatch(' + d.id + ')">' +
+          (isWatched(d.id) ? 'Watching' : 'Watch') +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
 function renderWatchlist() {
-  const grid = document.getElementById('watchlistGrid');
-  const count = document.getElementById('watchlistCount');
+  var grid = document.getElementById('watchlistGrid');
+  var count = document.getElementById('watchlistCount');
   count.textContent = watchlist.length + (watchlist.length === 1 ? ' item' : ' items');
   if (!watchlist.length) {
     grid.innerHTML = '<div class="watchlist-empty"><p>Your watchlist is empty. Click Watch on any deal to start tracking.</p></div>';
     return;
   }
-  grid.innerHTML = watchlist.map(w => `
-    <div class="watchlist-card">
-      <button class="wl-remove" onclick="removeFromWatchlist(${w.id})" title="Remove">x</button>
-      <div class="wl-store">${w.store}</div>
-      <div class="wl-name">${w.name}</div>
-      <div>
-        <span class="wl-price">${formatHUF(w.price)}</span>
-        ${w.original > w.price ? `<span class="wl-original">${formatHUF(w.original)}</span>` : ''}
-        ${w.discount > 0 ? `<span class="wl-discount">-${w.discount}%</span>` : ''}
-      </div>
-      <div class="wl-alert">Tracking - will update on price change</div>
-    </div>
-  `).join('');
+  grid.innerHTML = watchlist.map(function(w) {
+    return '<div class="watchlist-card">' +
+      '<button class="wl-remove" onclick="removeFromWatchlist(' + w.id + ')" title="Remove">&#10005;</button>' +
+      '<div class="wl-store">' + w.store + '</div>' +
+      '<div class="wl-name">' + w.name + '</div>' +
+      '<div>' +
+        '<span class="wl-price">' + formatHUF(w.price) + '</span>' +
+        (w.original > w.price ? '<span class="wl-original">' + formatHUF(w.original) + '</span>' : '') +
+        (w.discount > 0 ? '<span class="wl-discount">-' + w.discount + '%</span>' : '') +
+      '</div>' +
+      '<div class="wl-alert">Tracking - will update on price change</div>' +
+    '</div>';
+  }).join('');
 }
 
 function searchDeals() {
@@ -175,7 +183,7 @@ function searchDeals() {
 
 function filterCategory(cat, btn) {
   currentCategory = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   renderDeals();
 }
@@ -185,9 +193,9 @@ function sortDeals() {
   renderDeals();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('searchInput');
-  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') searchDeals(); });
+document.addEventListener('DOMContentLoaded', function() {
+  var inp = document.getElementById('searchInput');
+  if (inp) inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') searchDeals(); });
   loadDeals();
   renderWatchlist();
 });

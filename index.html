@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-lang="en">
+<html lang="hu" data-lang="hu">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PricePulse HU - Best Deals in Hungary</title>
-  <meta name="description" content="Compare prices from 100+ Hungarian shops across electronics, watches, skincare, fashion, home and more. Free and open source." />
+  <title>PricePulse HU - Legjobb ajánlatok Magyarországon</title>
+  <meta name="description" content="Hasonlítsd össze az árakat 100+ magyar boltban: elektronika, órák, bőrápolás, divat, otthon és még sok más. Ingyenes és nyílt forráskódú." />
   <meta name="keywords" content="Hungary deals, akcio, price comparison HU, watches Hungary, skincare Hungary, Chrono24, Alza, MediaMarkt, eMAG" />
   <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="PricePulse HU - Best Deals in Hungary" />
-  <meta property="og:description" content="Open source price comparison for 100+ Hungarian shops." />
+  <meta property="og:title" content="PricePulse HU - Legjobb ajánlatok Magyarországon" />
+  <meta property="og:description" content="Nyílt forráskódú árösszehasonlítás 100+ magyar boltban." />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://pricepulse-hu.vercel.app/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,9 +20,9 @@
     <div class="nav-inner">
       <a href="/" class="nav-logo">PricePulse <span>HU</span></a>
       <div class="nav-links">
-        <a href="#watchlist" class="nav-link" data-en="Watchlist" data-hu="Figyelőlista">Watchlist</a>
-        <a href="#stores" class="nav-link" data-en="Stores" data-hu="Boltok">Stores</a>
-        <button class="lang-toggle" id="langToggle" onclick="toggleLang()">HU</button>
+        <a href="#watchlist" class="nav-link" data-hu="Figyelőlista" data-en="Watchlist">Figyelőlista</a>
+        <a href="#stores" class="nav-link" data-hu="Boltok" data-en="Stores">Boltok</a>
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()">EN</button>
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="nav-github">
           <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           <span>GitHub</span>
@@ -34,24 +34,24 @@
   <header class="hero">
     <div class="container">
       <div class="hero-eyebrow">
-        <span class="hero-badge" data-en="Hungary Only" data-hu="Csak Magyarország">Hungary Only</span>
-        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="oss-badge" data-en="Open Source" data-hu="Nyílt forráskód">Open Source</a>
+        <span class="hero-badge" data-hu="Csak Magyarország" data-en="Hungary Only">Csak Magyarország</span>
+        <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="oss-badge" data-hu="Nyílt forráskód" data-en="Open Source">Nyílt forráskód</a>
       </div>
-      <h1 class="hero-title" data-en="Find the best deals<br>across Hungarian shops" data-hu="Találd meg a legjobb ajánlatokat<br>magyar boltokban">Find the best deals<br>across Hungarian shops</h1>
-      <p class="hero-sub" data-en="Compare prices on electronics, watches, skincare, fashion, home goods and more. Free, open source, no tracking." data-hu="Hasonlítsd össze az árakat elektronikán, órákon, bőrápolón, divaton és még sok máson. Ingyenes, nyílt forráskódú, nyomkövetés nélkül.">Compare prices on electronics, watches, skincare, fashion, home goods and more. Free, open source, no tracking.</p>
+      <h1 class="hero-title" data-hu="Találd meg a legjobb ajánlatokat&lt;br&gt;magyar boltokban" data-en="Find the best deals&lt;br&gt;across Hungarian shops">Találd meg a legjobb ajánlatokat<br>magyar boltokban</h1>
+      <p class="hero-sub" data-hu="Hasonlítsd össze az árakat elektronikán, órákon, bőrápolón, divaton és még sok máson. Ingyenes, nyílt forráskódú, nyomkövetés nélkül." data-en="Compare prices on electronics, watches, skincare, fashion, home goods and more. Free, open source, no tracking.">Hasonlítsd össze az árakat elektronikán, órákon, bőrápolón, divaton és még sok máson. Ingyenes, nyílt forráskódú, nyomkövetés nélkül.</p>
       <form class="search-bar" onsubmit="goSearch(event)">
-        <input type="text" id="searchInput" data-en-placeholder="Search any product, brand..." data-hu-placeholder="Keress terméket, márkát..." placeholder="Search any product, brand..." autocomplete="off" />
-        <button type="submit" class="btn-primary" data-en="Search" data-hu="Keresés">Search</button>
+        <input type="text" id="searchInput" data-hu-placeholder="Keress terméket, márkát..." data-en-placeholder="Search any product, brand..." placeholder="Keress terméket, márkát..." autocomplete="off" />
+        <button type="submit" class="btn-primary" data-hu="Keresés" data-en="Search">Keresés</button>
       </form>
       <div class="search-suggestions">
-        <span class="suggestion-label" data-en="Popular:" data-hu="Népszerű:">Popular:</span>
-        <a class="suggestion" href="/search.html?q=Casio+watch">Casio watch</a>
+        <span class="suggestion-label" data-hu="Népszerű:" data-en="Popular:">Népszerű:</span>
+        <a class="suggestion" href="/search.html?q=Casio+karóra">Casio karóra</a>
         <a class="suggestion" href="/search.html?q=iPhone+15">iPhone 15</a>
-        <a class="suggestion" href="/search.html?q=CeraVe+skincare">CeraVe skincare</a>
-        <a class="suggestion" href="/search.html?q=Nike+cip%C5%91">Nike cipő</a>
+        <a class="suggestion" href="/search.html?q=CeraVe+bőrápoló">CeraVe bőrápoló</a>
+        <a class="suggestion" href="/search.html?q=Nike+cipő">Nike cipő</a>
         <a class="suggestion" href="/search.html?q=Samsung+TV">Samsung TV</a>
         <a class="suggestion" href="/search.html?q=Dyson">Dyson</a>
-        <a class="suggestion" href="/search.html?q=Seiko+%C3%B3ra">Seiko óra</a>
+        <a class="suggestion" href="/search.html?q=Seiko+óra">Seiko óra</a>
         <a class="suggestion" href="/search.html?q=The+Ordinary">The Ordinary</a>
       </div>
     </div>
@@ -59,41 +59,70 @@
 
   <section class="categories-section">
     <div class="container">
-      <h2 class="section-title" data-en="Browse categories" data-hu="Kategóriák">Browse categories</h2>
+      <h2 class="section-title" data-hu="Kategóriák" data-en="Browse categories">Kategóriák</h2>
       <div class="cat-grid">
-        <a href="/search.html?q=laptop+akcio" class="cat-card"><span class="cat-icon">💻</span><span data-en="Electronics" data-hu="Elektronika">Electronics</span></a>
-        <a href="/search.html?q=kar%C3%B3ra+%C3%B3ra" class="cat-card"><span class="cat-icon">⌚</span><span data-en="Watches" data-hu="Órák">Watches</span></a>
-        <a href="/search.html?q=skincare+arc%C3%A1pol%C3%B3" class="cat-card"><span class="cat-icon">✨</span><span data-en="Skincare" data-hu="Bőrápolás">Skincare</span></a>
-        <a href="/search.html?q=Nike+Adidas+cip%C5%91" class="cat-card"><span class="cat-icon">👟</span><span data-en="Fashion" data-hu="Divat">Fashion</span></a>
-        <a href="/search.html?q=parf%C3%BCm+illatszer" class="cat-card"><span class="cat-icon">🧴</span><span data-en="Beauty" data-hu="Szépség">Beauty</span></a>
-        <a href="/search.html?q=otthon+b%C3%BAtor+akcio" class="cat-card"><span class="cat-icon">🏠</span><span data-en="Home" data-hu="Otthon">Home</span></a>
-        <a href="/search.html?q=sport+fitness" class="cat-card"><span class="cat-icon">🏋️</span><span data-en="Sports" data-hu="Sport">Sports</span></a>
-        <a href="/search.html?q=j%C3%A1t%C3%A9k+gyerek" class="cat-card"><span class="cat-icon">🎮</span><span data-en="Toys &amp; Gaming" data-hu="Játék">Toys &amp; Gaming</span></a>
+        <a href="/search.html?q=laptop+akció" class="cat-card">
+          <!-- Wikimedia: Nuvola apps display.svg -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M1 19h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M8 16v3M14 16v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-hu="Elektronika" data-en="Electronics">Elektronika</span>
+        </a>
+        <a href="/search.html?q=karóra+óra" class="cat-card">
+          <!-- Wikimedia: watch icon -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M11 8v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 3.5h6M8 18.5h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-hu="Órák" data-en="Watches">Órák</span>
+        </a>
+        <a href="/search.html?q=skincare+arcápoló" class="cat-card">
+          <!-- Wikimedia: cosmetics / skincare -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="6" width="8" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 6V4h4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 10h2M10 13h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span data-hu="Bőrápolás" data-en="Skincare">Bőrápolás</span>
+        </a>
+        <a href="/search.html?q=Nike+Adidas+cipő" class="cat-card">
+          <!-- Wikimedia: shirt / fashion -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 2L2 6l2 3 3-1.5V20h8V7.5L18 9l2-3-6-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-hu="Divat" data-en="Fashion">Divat</span>
+        </a>
+        <a href="/search.html?q=parfüm+illatszer" class="cat-card">
+          <!-- Wikimedia: perfume bottle -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="9" width="8" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M9 9V7h4v2" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="5" width="4" height="2" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M11 7V5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M9 13h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-hu="Szépség" data-en="Beauty">Szépség</span>
+        </a>
+        <a href="/search.html?q=otthon+bútor+akció" class="cat-card">
+          <!-- Wikimedia: house icon -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 10.5L11 3l8 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 9v9a1 1 0 001 1h4v-4h2v4h4a1 1 0 001-1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-hu="Otthon" data-en="Home">Otthon</span>
+        </a>
+        <a href="/search.html?q=sport+fitness" class="cat-card">
+          <!-- Wikimedia: dumbbell -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 11h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="4" y="8" width="2" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="16" y="8" width="2" height="6" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9.5" width="2" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="18" y="9.5" width="2" height="3" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          <span data-hu="Sport" data-en="Sports">Sport</span>
+        </a>
+        <a href="/search.html?q=játék+gyerek" class="cat-card">
+          <!-- Wikimedia: gamepad -->
+          <svg class="cat-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="7" width="18" height="10" rx="4" stroke="currentColor" stroke-width="1.5"/><path d="M7 12h4M9 10v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="11" r="0.8" fill="currentColor"/><circle cx="16" cy="13" r="0.8" fill="currentColor"/></svg>
+          <span data-hu="Játék" data-en="Toys &amp; Gaming">Játék</span>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- STORES MARQUEE -->
   <section id="stores" class="stores-section">
     <div class="container">
-      <h2 class="section-title" data-en="100+ stores tracked" data-hu="100+ bolt követve">100+ stores tracked</h2>
+      <h2 class="section-title" data-hu="100+ bolt követve" data-en="100+ stores tracked">100+ bolt követve</h2>
     </div>
     <div class="marquee-wrap">
-      <div class="marquee-track" id="marqueeTrack">
-        <!-- filled by JS -->
-      </div>
+      <div class="marquee-track" id="marqueeTrack"></div>
     </div>
   </section>
 
   <section id="watchlist" class="watchlist-section">
     <div class="container">
       <div class="section-header">
-        <h2 class="section-title" data-en="Your watchlist" data-hu="Figyelőlistád">Your watchlist</h2>
-        <span class="watchlist-count" id="watchlistCount">0 items</span>
+        <h2 class="section-title" data-hu="Figyelőlistád" data-en="Your watchlist">Figyelőlistád</h2>
+        <span class="watchlist-count" id="watchlistCount">0 tétel</span>
       </div>
-      <p class="watchlist-hint" data-en="Search for any product and click Watch to track price changes." data-hu="Keress terméket és kattints a Figyelés gombra az árváltozások követéséhez.">Search for any product and click Watch to track price changes.</p>
+      <p class="watchlist-hint" data-hu="Keress terméket és kattints a Figyelés gombra az árváltozások követéséhez." data-en="Search for any product and click Watch to track price changes.">Keress terméket és kattints a Figyelés gombra az árváltozások követéséhez.</p>
       <div class="watchlist-grid" id="watchlistGrid">
-        <div class="watchlist-empty"><p data-en="Your watchlist is empty. Search for a product and click Watch to start tracking." data-hu="A figyelőlistád üres. Keress terméket és kattints a Figyelés gombra.">Your watchlist is empty. Search for a product and click Watch to start tracking.</p></div>
+        <div class="watchlist-empty"><p data-hu="A figyelőlistád üres. Keress terméket és kattints a Figyelés gombra." data-en="Your watchlist is empty. Search for a product and click Watch to start tracking.">A figyelőlistád üres. Keress terméket és kattints a Figyelés gombra.</p></div>
       </div>
     </div>
   </section>
@@ -101,17 +130,17 @@
   <section class="oss-section">
     <div class="container oss-inner">
       <div class="oss-text">
-        <h2 data-en="Free and open source" data-hu="Ingyenes és nyílt forráskódú">Free and open source</h2>
-        <p data-en="PricePulse HU is fully open source. Inspect the code, self-host it, or contribute improvements. No ads, no tracking, no paywall." data-hu="A PricePulse HU teljesen nyílt forráskódú. Nézd meg a kódot, telepítsd saját szerverre, vagy járulj hozzá fejlesztésekkel. Sem hirdetés, sem nyomkövetés, sem fizetős tartalom.">PricePulse HU is fully open source. Inspect the code, self-host it, or contribute improvements. No ads, no tracking, no paywall.</p>
+        <h2 data-hu="Ingyenes és nyílt forráskódú" data-en="Free and open source">Ingyenes és nyílt forráskódú</h2>
+        <p data-hu="A PricePulse HU teljesen nyílt forráskódú. Nézd meg a kódot, telepítsd saját szerverre, vagy járulj hozzá fejlesztésekkel. Sem hirdetés, sem nyomkövetés, sem fizetős tartalom." data-en="PricePulse HU is fully open source. Inspect the code, self-host it, or contribute improvements. No ads, no tracking, no paywall.">A PricePulse HU teljesen nyílt forráskódú. Nézd meg a kódot, telepítsd saját szerverre, vagy járulj hozzá fejlesztésekkel. Sem hirdetés, sem nyomkövetés, sem fizetős tartalom.</p>
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="btn-github">
           <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           View on GitHub
         </a>
       </div>
       <div class="oss-stats">
-        <div class="oss-stat"><span class="stat-num">100+</span><span class="stat-label" data-en="Stores tracked" data-hu="Bolt követve">Stores tracked</span></div>
-        <div class="oss-stat"><span class="stat-num">8</span><span class="stat-label" data-en="Categories" data-hu="Kategória">Categories</span></div>
-        <div class="oss-stat"><span class="stat-num">0</span><span class="stat-label" data-en="Trackers" data-hu="Nyomkövetők">Trackers</span></div>
+        <div class="oss-stat"><span class="stat-num">100+</span><span class="stat-label" data-hu="Bolt követve" data-en="Stores tracked">Bolt követve</span></div>
+        <div class="oss-stat"><span class="stat-num">8</span><span class="stat-label" data-hu="Kategória" data-en="Categories">Kategória</span></div>
+        <div class="oss-stat"><span class="stat-num">0</span><span class="stat-label" data-hu="Nyomkövetők" data-en="Trackers">Nyomkövetők</span></div>
       </div>
     </div>
   </section>
@@ -120,8 +149,8 @@
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="nav-logo">PricePulse <span>HU</span></span>
-        <p data-en="Prices sourced from public store listings via Google Shopping. Not affiliated with any retailer." data-hu="Az árak nyilvános boltlistákból, a Google Shopping-on keresztül. Nem állunk kapcsolatban egyetlen kereskedővel sem.">Prices sourced from public store listings via Google Shopping. Not affiliated with any retailer.</p>
-        <p class="footer-small" data-en="Built for Hungarian shoppers. Data refreshed every 6 hours." data-hu="Magyar vásárlóknak készítve. Az adatok 6 óránként frissülnek.">Built for Hungarian shoppers. Data refreshed every 6 hours.</p>
+        <p data-hu="Az árak nyilvános boltlistákból, a Google Shopping-on keresztül. Nem állunk kapcsolatban egyetlen kereskedővel sem." data-en="Prices sourced from public store listings via Google Shopping. Not affiliated with any retailer.">Az árak nyilvános boltlistákból, a Google Shopping-on keresztül. Nem állunk kapcsolatban egyetlen kereskedővel sem.</p>
+        <p class="footer-small" data-hu="Magyar vásárlóknak készítve. Az adatok 6 óránként frissülnek." data-en="Built for Hungarian shoppers. Data refreshed every 6 hours.">Magyar vásárlóknak készítve. Az adatok 6 óránként frissülnek.</p>
       </div>
       <div class="footer-right">
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="footer-github" aria-label="GitHub">
@@ -133,37 +162,27 @@
 
   <script src="app.js"></script>
   <script>
-    // ---- Search redirect ----
     function goSearch(e) {
       e.preventDefault();
       var q = document.getElementById('searchInput').value.trim();
       if (q) window.location.href = '/search.html?q=' + encodeURIComponent(q);
     }
-
-    // ---- Language toggle ----
-    var currentLang = localStorage.getItem('pp_lang') || 'en';
-
+    var currentLang = localStorage.getItem('pp_lang') || 'hu';
     function applyLang(lang) {
       currentLang = lang;
       localStorage.setItem('pp_lang', lang);
       document.documentElement.setAttribute('data-lang', lang);
-      document.getElementById('langToggle').textContent = lang === 'en' ? 'HU' : 'EN';
-
-      document.querySelectorAll('[data-en]').forEach(function(el) {
+      document.getElementById('langToggle').textContent = lang === 'hu' ? 'EN' : 'HU';
+      document.querySelectorAll('[data-hu]').forEach(function(el) {
         var text = el.getAttribute('data-' + lang);
-        if (text) el.innerHTML = text;
+        if (text !== null) el.innerHTML = text;
       });
-      document.querySelectorAll('[data-en-placeholder]').forEach(function(el) {
+      document.querySelectorAll('[data-hu-placeholder]').forEach(function(el) {
         var ph = el.getAttribute('data-' + lang + '-placeholder');
         if (ph) el.placeholder = ph;
       });
     }
-
-    function toggleLang() {
-      applyLang(currentLang === 'en' ? 'hu' : 'en');
-    }
-
-    // ---- Marquee ----
+    function toggleLang() { applyLang(currentLang === 'hu' ? 'en' : 'hu'); }
     var STORES = [
       'Alza.hu','MediaMarkt.hu','eMAG.hu','Extreme Digital','iStyle.hu','Euronics.hu',
       'Notebookspecialista.hu','Notino.hu','Answear.hu','Rossmann.hu','Shopalike.hu',
@@ -179,26 +198,23 @@
       'New Yorker.hu','Pull&Bear.hu','Bershka.hu','Stradivarius.hu',
       'Douglas.hu','Sephora.hu','Golden Rose.hu','Maybelline.hu',
       'L Oreal.hu','Nivea.hu','Garnier.hu','Neutrogena.hu','The INKEY List',
-      'Paula s Choice','COSRX','Innisfree','Etude House','Klarna deals',
+      'Paula s Choice','COSRX','Innisfree','Etude House',
       'Samsung Shop.hu','Apple Store.hu','Lenovo.hu','HP Store.hu','Asus Store',
       'MSI Center','Dell.hu','Acer Store','Xiaomi.hu','Huawei Store',
       'Sony Store','LG Shop','Philips.hu','Bosch.hu','Miele.hu',
       'Whirlpool.hu','Gorenje.hu','Zanussi.hu','Electrolux.hu','AEG.hu',
-      'Dyson.hu','Rowenta.hu','Tefal.hu','Moulinex.hu','De Longhi.hu',
-      'Nespresso.hu','Krups.hu','WMF.hu','Zwilling.hu','Victorinox.hu',
+      'Dyson.hu','Rowenta.hu','Tefal.hu','De Longhi.hu','Nespresso.hu',
       'Tissot Budapest','Swatch.hu','Casio Shop.hu','Seiko Boutique',
       'Hamilton Watch','TAG Heuer Budapest','Longines Budapest',
-      'Fossil.hu','Garmin.hu','Suunto.hu','Polar.hu','Fitbit.hu'
+      'Fossil.hu','Garmin.hu','Suunto.hu','Polar.hu'
     ];
-
     function buildMarquee() {
       var track = document.getElementById('marqueeTrack');
-      var list = STORES.concat(STORES); // duplicate for seamless loop
+      var list = STORES.concat(STORES);
       track.innerHTML = list.map(function(s) {
         return '<span class="marquee-item">' + s + '</span>';
       }).join('');
     }
-
     document.addEventListener('DOMContentLoaded', function() {
       applyLang(currentLang);
       buildMarquee();

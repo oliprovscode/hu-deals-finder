@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +14,8 @@
     <div class="nav-inner">
       <a href="/" class="nav-logo">PricePulse <span>HU</span></a>
       <div class="nav-links">
-        <a href="/#watchlist" class="nav-link">Watchlist</a>
+        <a href="/#watchlist" class="nav-link" data-en="Watchlist" data-hu="Figyelőlista">Watchlist</a>
+        <button class="lang-toggle" id="langToggle" onclick="toggleLang()">HU</button>
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="nav-github">
           <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           <span>GitHub</span>
@@ -26,8 +27,8 @@
   <div class="search-page-header">
     <div class="container">
       <form class="search-bar" onsubmit="reSearch(event)">
-        <input type="text" id="searchInput" placeholder="Search any product, brand..." autocomplete="off" />
-        <button type="submit" class="btn-primary">Search</button>
+        <input type="text" id="searchInput" data-en-placeholder="Search any product, brand..." data-hu-placeholder="Keress terméket, márkát..." placeholder="Search any product, brand..." autocomplete="off" />
+        <button type="submit" class="btn-primary" data-en="Search" data-hu="Keresés">Search</button>
       </form>
       <div class="search-meta" id="searchMeta"></div>
     </div>
@@ -37,21 +38,21 @@
     <div class="container">
       <div class="results-toolbar" id="resultsToolbar" style="display:none">
         <div class="filter-row" id="filterRow">
-          <button class="filter-btn active" onclick="filterCategory('all',this)">All</button>
-          <button class="filter-btn" onclick="filterCategory('electronics',this)">Electronics</button>
-          <button class="filter-btn" onclick="filterCategory('watches',this)">Watches</button>
-          <button class="filter-btn" onclick="filterCategory('skincare',this)">Skincare</button>
-          <button class="filter-btn" onclick="filterCategory('fashion',this)">Fashion</button>
-          <button class="filter-btn" onclick="filterCategory('beauty',this)">Beauty</button>
-          <button class="filter-btn" onclick="filterCategory('home',this)">Home</button>
-          <button class="filter-btn" onclick="filterCategory('sports',this)">Sports</button>
+          <button class="filter-btn active" onclick="filterCategory('all',this)" data-en="All" data-hu="Összes">All</button>
+          <button class="filter-btn" onclick="filterCategory('electronics',this)" data-en="Electronics" data-hu="Elektronika">Electronics</button>
+          <button class="filter-btn" onclick="filterCategory('watches',this)" data-en="Watches" data-hu="Órák">Watches</button>
+          <button class="filter-btn" onclick="filterCategory('skincare',this)" data-en="Skincare" data-hu="Bőrápolás">Skincare</button>
+          <button class="filter-btn" onclick="filterCategory('fashion',this)" data-en="Fashion" data-hu="Divat">Fashion</button>
+          <button class="filter-btn" onclick="filterCategory('beauty',this)" data-en="Beauty" data-hu="Szépség">Beauty</button>
+          <button class="filter-btn" onclick="filterCategory('home',this)" data-en="Home" data-hu="Otthon">Home</button>
+          <button class="filter-btn" onclick="filterCategory('sports',this)" data-en="Sports" data-hu="Sport">Sports</button>
         </div>
         <div class="sort-row">
-          <label for="sortSelect">Sort:</label>
+          <label for="sortSelect" data-en="Sort:" data-hu="Rendezés:">Sort:</label>
           <select id="sortSelect" onchange="sortDeals()">
-            <option value="discount">Biggest discount</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
+            <option value="discount" data-en="Biggest discount" data-hu="Legnagyobb kedvezmény">Biggest discount</option>
+            <option value="price-asc" data-en="Price: Low to High" data-hu="Ár: növekvő">Price: Low to High</option>
+            <option value="price-desc" data-en="Price: High to Low" data-hu="Ár: csökkenő">Price: High to Low</option>
           </select>
         </div>
       </div>
@@ -63,7 +64,7 @@
     <div class="container footer-inner">
       <div class="footer-left">
         <span class="nav-logo">PricePulse <span>HU</span></span>
-        <p>Prices sourced via Google Shopping. Not affiliated with any retailer.</p>
+        <p data-en="Prices sourced via Google Shopping. Not affiliated with any retailer." data-hu="Az árak a Google Shopping-on keresztül. Nem állunk kapcsolatban egyetlen kereskedővel sem.">Prices sourced via Google Shopping. Not affiliated with any retailer.</p>
       </div>
       <div class="footer-right">
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="footer-github" aria-label="GitHub">
@@ -74,5 +75,24 @@
   </footer>
 
   <script src="search.js"></script>
+  <script>
+    var currentLang = localStorage.getItem('pp_lang') || 'en';
+    function applyLang(lang) {
+      currentLang = lang;
+      localStorage.setItem('pp_lang', lang);
+      document.documentElement.setAttribute('data-lang', lang);
+      document.getElementById('langToggle').textContent = lang === 'en' ? 'HU' : 'EN';
+      document.querySelectorAll('[data-en]').forEach(function(el) {
+        var text = el.getAttribute('data-' + lang);
+        if (text) el.innerHTML = text;
+      });
+      document.querySelectorAll('[data-en-placeholder]').forEach(function(el) {
+        var ph = el.getAttribute('data-' + lang + '-placeholder');
+        if (ph) el.placeholder = ph;
+      });
+    }
+    function toggleLang() { applyLang(currentLang === 'en' ? 'hu' : 'en'); }
+    document.addEventListener('DOMContentLoaded', function() { applyLang(currentLang); });
+  </script>
 </body>
 </html>

@@ -1,21 +1,76 @@
-# HU Deals Finder 🇭🇺
+# PricePulse HU
 
-Find the best tech & electronics deals across Hungarian shops — Alza, MediaMarkt, eMAG, Extreme Digital and more.
+Open source price comparison and deal finder for Hungarian electronics stores.
+Tracks Alza, MediaMarkt, eMAG, Extreme Digital, Euronics, iStyle and more.
 
-## Features
-- 🔍 Search & filter by category
-- 📋 Watchlist with localStorage persistence
-- 🏪 8 Hungarian retailer sources tracked
-- 💰 Price comparison with discount % badges
-- 📱 Responsive, clean flat design (no gradients, no AI-looking UI)
+Live site: https://pricepulse-hu.vercel.app
 
-## Tech Stack
-- Vanilla HTML/CSS/JS (no framework)
-- Deployed on Vercel
+---
+
+## How it works
+
+The app fetches live product data using the SerpApi Google Shopping API, filtered to Hungarian retailers.
+A Vercel serverless function at /api/search acts as a secure proxy so the API key is never exposed in client-side code or in this repository.
+
+---
+
+## Self-hosting
+
+### 1. Get a SerpApi key
+
+- Go to https://serpapi.com
+- Create a free account (100 searches per month on the free plan)
+- Copy your API key from the dashboard at https://serpapi.com/manage-api-key
+
+### 2. Clone the repo
+
+```
+git clone https://github.com/oliprovscode/hu-deals-finder.git
+cd hu-deals-finder
+```
+
+### 3. Set the environment variable
+
+Create a `.env` file locally (never commit this file):
+
+```
+SERPAPI_KEY=your_key_here
+```
+
+Or if deploying to Vercel:
+1. Open your project in the Vercel dashboard
+2. Go to Settings > Environment Variables
+3. Add key: `SERPAPI_KEY`, value: your key
+4. Redeploy
+
+### 4. Deploy
+
+Vercel (recommended):
+```
+npm i -g vercel
+vercel
+```
+
+Or import the GitHub repo directly at vercel.com/new.
+
+---
+
+## Tech stack
+
+- Vanilla HTML, CSS, JavaScript (no framework, no build step)
+- SerpApi Google Shopping API for live deal data
+- Vercel serverless function for secure API key proxying
 - localStorage for watchlist persistence
+- Deployed on Vercel
 
-## To do (extend with real APIs)
-- [ ] Integrate Árukereső.hu API for live prices
-- [ ] Add push/email notifications on price drops
-- [ ] Browser extension companion
-- [ ] Price history chart per product
+---
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## License
+
+MIT — see LICENSE file.

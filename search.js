@@ -17,6 +17,10 @@ function formatHUF(n) {
   return Number(n).toLocaleString('hu-HU') + ' Ft';
 }
 
+function getLang() {
+  return localStorage.getItem('pp_lang') || 'hu';
+}
+
 function showSkeletons(count) {
   var grid = document.getElementById('dealsGrid');
   var html = '';
@@ -39,78 +43,139 @@ async function fetchDeals(q) {
   return parseResults(data);
 }
 
+async function fetchProductDetail(productId) {
+  try {
+    var res = await fetch('/api/product?id=' + encodeURIComponent(productId));
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) { return null; }
+}
+
 function parseResults(data) {
   return (data.shopping_results || []).map(function(item, i) {
-    var price = parseFloat((item.price || '0').replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
-    var original = parseFloat((item.old_price || '0').replace(/[^0-9.,]/g, '').replace(',', '.')) || price;
+    var priceRaw = (item.price || '').replace(/\s/g, '').replace(/[Ff][Tt]/g, '').replace(/[^0-9.,]/g, '').replace(',', '.');
+    var price = parseFloat(priceRaw) || 0;
+    var origRaw = (item.old_price || '').replace(/\s/g, '').replace(/[Ff][Tt]/g, '').replace(/[^0-9.,]/g, '').replace(',', '.');
+    var original = parseFloat(origRaw) || price;
     var discount = original > price ? Math.round((1 - price / original) * 100) : 0;
     var url = item.product_link || item.link || '#';
-    var typeStr = (item.product_type || '') + ' ' + (item.title || '');
-    var brand = extractBrand(item.title || '');
+    var brand = extractBrand(item);
+    var category = mapCat(item);
     return {
       id: 5000 + i,
+      product_id: item.product_id || null,
       name: item.title || 'Termék',
       store: item.source || 'Bolt',
       brand: brand,
-      category: mapCat(typeStr),
+      category: category,
       price: price,
       original: original,
       discount: discount,
       inStock: item.in_stock !== false,
       img: item.thumbnail || '',
-      url: url
+      url: url,
+      rating: item.rating || null,
+      reviews: item.reviews || null
     };
   }).filter(function(d) { return d.name && d.price > 0; });
 }
 
-function extractBrand(title) {
-  var known = ['Apple','Samsung','Sony','LG','Philips','Bosch','Dyson','Nike','Adidas','Casio',
-    'Seiko','Tissot','Fossil','Garmin','CeraVe','The Ordinary','COSRX','Nivea','Garnier',
-    'Huawei','Xiaomi','Lenovo','Asus','Dell','HP','Nespresso','Tefal','Rowenta','Moulinex',
-    'Swatch','Hamilton','Longines','TAG Heuer','Omega','Rolex','Citizen','Orient'];
+// Brand: check known list first (whole-word match), then item.brand field, then first UPPERCASE-starting word in title
+function extractBrand(item) {
+  var known = [
+    'Apple','Samsung','Sony','LG','Philips','Bosch','Dyson','Nike','Adidas','Puma','Reebok',
+    'Casio','Seiko','Tissot','Fossil','Garmin','Suunto','Polar','Fitbit',
+    'CeraVe','The Ordinary','COSRX','Nivea','Garnier','Neutrogena','L\'Oréal','Maybelline','Clinique',
+    'Huawei','Xiaomi','Lenovo','Asus','Dell','HP','Acer','MSI','Razer',
+    'Nespresso','Tefal','Rowenta','De Longhi','Philips','Moulinex','Bosch',
+    'Swatch','Hamilton','Longines','TAG Heuer','Omega','Rolex','Citizen','Orient','Invicta',
+    'Ikea','Zara','H&M','Nike','New Balance','Converse','Vans','Timberland',
+    'Dyson','iRobot','Karcher','Black+Decker','Makita','Bosch','DeWalt'
+  ];
+  var title = (item.title || '');
+  var titleLow = title.toLowerCase();
+  // 1. SerpAPI sometimes returns item.brand directly
+  if (item.brand && item.brand.trim()) return item.brand.trim();
+  // 2. Known brand list (word-boundary check)
   for (var i = 0; i < known.length; i++) {
-    if (title.toLowerCase().includes(known[i].toLowerCase())) return known[i];
+    if (titleLow.includes(known[i].toLowerCase())) return known[i];
   }
-  return title.split(' ')[0] || 'Egyéb';
+  // 3. First token that starts with uppercase and is >2 chars and not a number
+  var tokens = title.split(/\s+/);
+  for (var j = 0; j < Math.min(tokens.length, 4); j++) {
+    var t = tokens[j].replace(/[^a-zA-Z0-9\-+]/g, '');
+    if (t.length > 2 && /^[A-ZÁÉÍÓÖŐÚÜŰ]/.test(t) && !/^\d/.test(t)) return t;
+  }
+  return 'Egyéb';
 }
 
-function mapCat(s) {
-  if (typeof s !== 'string') s = '';
-  s = s.toLowerCase();
-  if (s.includes('ora') || s.includes('watch') || s.includes('karora') || s.includes('chrono') || s.includes('timepiece') || s.includes('karóra')) return 'watches';
-  if (s.includes('skincare') || s.includes('arcapo') || s.includes('serum') || s.includes('moisturizer') || s.includes('cerave') || s.includes('ordinary') || s.includes('borapo') || s.includes('toner') || s.includes('cleanser') || s.includes('bőrápo')) return 'skincare';
-  if (s.includes('parfum') || s.includes('perfume') || s.includes('fragrance') || s.includes('makeup') || s.includes('smink') || s.includes('lipstick') || s.includes('foundation') || s.includes('illatszer')) return 'beauty';
-  if (s.includes('cipo') || s.includes('shoe') || s.includes('ruha') || s.includes('jacket') || s.includes('clothes') || s.includes('fashion') || s.includes('divat') || s.includes('polo') || s.includes('nadrag') || s.includes('dress') || s.includes('sneaker') || s.includes('cipő')) return 'fashion';
-  if (s.includes('sport') || s.includes('fitness') || s.includes('gym') || s.includes('kerekpar') || s.includes('bike') || s.includes('futo') || s.includes('edzo')) return 'sports';
-  if (s.includes('butor') || s.includes('furniture') || s.includes('otthon') || s.includes('lampa') || s.includes('szonyeg') || s.includes('konyha')) return 'home';
-  if (s.includes('laptop') || s.includes('notebook') || s.includes('phone') || s.includes('telefon') || s.includes('tv') || s.includes('tablet') || s.includes('headphone') || s.includes('gaming') || s.includes('console') || s.includes('electronics')) return 'electronics';
-  return 'all';
+// Category: use SerpAPI product_type > extensions > title keywords
+function mapCat(item) {
+  // Build a string from all available category signals
+  var signals = [
+    (item.product_type || ''),
+    (item.extensions ? item.extensions.join(' ') : ''),
+    (item.title || ''),
+    (item.category || '')
+  ].join(' ').toLowerCase();
+
+  // Electronics — check before watches to avoid 'smartwatch' falling into watches only
+  if (/laptop|notebook|computer|pc |desktop|monitor|television|smart tv|\btv\b|tablet|phone|smartphone|headphone|earphone|earbuds|speaker|camera|printer|router|gaming|console|playstation|xbox|nintendo|processor|graphics card|ssd|hdd|ram|elektronik/.test(signals)) return 'electronics';
+  // Watches — after electronics so smartwatch can match here if no electronics signal
+  if (/\bwatch\b|karóra|kar\s*óra|wristwatch|chronograph|timepiece|óramű|pocket watch|smartwatch/.test(signals)) return 'watches';
+  // Skincare
+  if (/serum|moisturizer|moisturiser|sunscreen|spf|toner|cleanser|face wash|eye cream|retinol|hyaluronic|niacinamide|skincare|skin care|bőrápoló|arcápoló|arckrém/.test(signals)) return 'skincare';
+  // Beauty / makeup / fragrance
+  if (/perfume|parfum|fragrance|eau de|cologne|lipstick|foundation|mascara|concealer|blush|eyeshadow|makeup|make-up|szépség|illatszer|smink/.test(signals)) return 'beauty';
+  // Fashion
+  if (/shoes|shoe|sneaker|boot|sandal|trainer|cipő|clothing|clothes|jacket|coat|dress|shirt|trouser|jeans|skirt|hoodie|divat|fashion|apparel/.test(signals)) return 'fashion';
+  // Sports
+  if (/sport|fitness|gym|bicycle|bike|cycling|running|football|basketball|tennis|swimming|yoga|treadmill|kerékpár|futó|edzés/.test(signals)) return 'sports';
+  // Home
+  if (/furniture|sofa|chair|table|bed|mattress|lamp|carpet|rug|kitchen|cookware|vacuum|washing machine|dishwasher|fridge|oven|otthon|bútor|lámpa|konyha/.test(signals)) return 'home';
+
+  return 'other';
 }
 
 function buildSidebarFilters() {
-  // stores
+  // Stores
   var stores = [...new Set(DEALS.map(function(d){ return d.store; }))].sort();
   var storeList = document.getElementById('storeList');
   if (storeList) {
-    storeList.innerHTML = stores.map(function(s) {
-      return '<label class="check-label"><input type="checkbox" value="' + s + '" checked onchange="updateStoreFilter()"><span>' + s + '</span></label>';
-    }).join('');
+    if (stores.length) {
+      storeList.innerHTML = stores.map(function(s) {
+        return '<label class="check-label"><input type="checkbox" value="' + s + '" checked onchange="updateStoreFilter()"><span>' + s + '</span></label>';
+      }).join('');
+    } else {
+      storeList.innerHTML = '<p class="filter-empty-hint">Nincs elérhető bolt</p>';
+    }
     activeStores = stores.slice();
   }
-  // brands
-  var brands = [...new Set(DEALS.map(function(d){ return d.brand; }))].sort();
+
+  // Brands — deduplicate and exclude 'Egyéb' from list if too dominant
+  var brandCounts = {};
+  DEALS.forEach(function(d) { brandCounts[d.brand] = (brandCounts[d.brand] || 0) + 1; });
+  var brands = Object.keys(brandCounts).sort(function(a,b){
+    return brandCounts[b] - brandCounts[a]; // sort by frequency
+  });
   var brandList = document.getElementById('brandList');
   if (brandList) {
-    brandList.innerHTML = brands.map(function(b) {
-      return '<label class="check-label"><input type="checkbox" value="' + b + '" checked onchange="updateBrandFilter()"><span>' + b + '</span></label>';
-    }).join('');
+    if (brands.length) {
+      brandList.innerHTML = brands.map(function(b) {
+        return '<label class="check-label"><input type="checkbox" value="' + b + '" checked onchange="updateBrandFilter()">'
+          + '<span>' + b + ' <span class="filter-count">(' + brandCounts[b] + ')</span></span></label>';
+      }).join('');
+    } else {
+      brandList.innerHTML = '<p class="filter-empty-hint">Nincs elérhető márka</p>';
+    }
     activeBrands = brands.slice();
   }
-  // price range
+
+  // Price range
   var prices = DEALS.map(function(d){ return d.price; }).filter(Boolean);
   if (prices.length) {
-    var minP = Math.floor(Math.min.apply(null, prices) / 1000) * 1000;
-    var maxP = Math.ceil(Math.max.apply(null, prices) / 1000) * 1000;
+    var minP = Math.floor(Math.min.apply(null, prices) / 100) * 100;
+    var maxP = Math.ceil(Math.max.apply(null, prices) / 100) * 100;
     priceRangeMin = minP; priceRangeMax = maxP;
     var rMin = document.getElementById('rangeMin');
     var rMax = document.getElementById('rangeMax');
@@ -152,15 +217,41 @@ function isWatched(id) {
   return watchlist.some(function(w) { return w.id === id; });
 }
 
-function toggleWatch(id) {
+async function toggleWatch(id) {
   if (isWatched(id)) {
     watchlist = watchlist.filter(function(w) { return w.id !== id; });
-  } else {
-    var deal = DEALS.find(function(d) { return d.id === id; });
-    if (deal) watchlist.push(Object.assign({}, deal, { addedAt: new Date().toISOString() }));
+    localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
+    renderDeals();
+    return;
   }
+  var deal = DEALS.find(function(d) { return d.id === id; });
+  if (!deal) return;
+
+  // Optimistically add to watchlist immediately
+  var entry = Object.assign({}, deal, { addedAt: new Date().toISOString(), priceHistory: null, detailLoading: true });
+  watchlist.push(entry);
   localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
   renderDeals();
+
+  // Fetch real price history + reviews in background if product_id available
+  if (deal.product_id) {
+    var detail = await fetchProductDetail(deal.product_id);
+    if (detail) {
+      var idx = watchlist.findIndex(function(w){ return w.id === id; });
+      if (idx !== -1) {
+        if (detail.priceHistory && detail.priceHistory.length > 0) {
+          watchlist[idx].priceHistory = detail.priceHistory;
+        }
+        if (detail.reviews) {
+          watchlist[idx].rating = detail.reviews.rating || watchlist[idx].rating;
+          watchlist[idx].reviews = detail.reviews.reviews || watchlist[idx].reviews;
+          watchlist[idx].reviewSnippets = detail.reviews.review_snippets || [];
+        }
+        watchlist[idx].detailLoading = false;
+        localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
+      }
+    }
+  }
 }
 
 function filterCategory(cat, btn) {
@@ -178,12 +269,13 @@ function sortDeals() {
 function filteredDeals() {
   var inStockOnly = document.getElementById('inStockOnly') && document.getElementById('inStockOnly').checked;
   var d = DEALS.slice();
+  // Category: 'other' items show under ALL but not under a specific category
   if (currentCategory !== 'all') {
-    d = d.filter(function(x) { return x.category === currentCategory || x.category === 'all'; });
+    d = d.filter(function(x) { return x.category === currentCategory; });
   }
   d = d.filter(function(x) { return x.price >= priceRangeMin && x.price <= priceRangeMax; });
-  if (activeStores.length) d = d.filter(function(x) { return activeStores.includes(x.store); });
-  if (activeBrands.length) d = d.filter(function(x) { return activeBrands.includes(x.brand); });
+  if (activeStores.length < DEALS.length) d = d.filter(function(x) { return activeStores.includes(x.store); });
+  if (activeBrands.length > 0) d = d.filter(function(x) { return activeBrands.includes(x.brand); });
   if (inStockOnly) d = d.filter(function(x) { return x.inStock; });
   if (currentSort === 'discount') d.sort(function(a,b){ return b.discount - a.discount; });
   else if (currentSort === 'price-asc') d.sort(function(a,b){ return a.price - b.price; });
@@ -191,8 +283,20 @@ function filteredDeals() {
   return d;
 }
 
+function renderStars(rating) {
+  if (!rating) return '';
+  var full = Math.floor(rating);
+  var half = rating - full >= 0.4;
+  var empty = 5 - full - (half ? 1 : 0);
+  var s = '';
+  for (var i = 0; i < full; i++) s += '<svg class="star full" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#f59e0b"/></svg>';
+  if (half) s += '<svg class="star half" viewBox="0 0 16 16"><defs><linearGradient id="hg"><stop offset="50%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="url(#hg)"/></svg>';
+  for (var j = 0; j < empty; j++) s += '<svg class="star empty" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#d1d5db"/></svg>';
+  return s;
+}
+
 function renderDeals() {
-  var lang = localStorage.getItem('pp_lang') || 'hu';
+  var lang = getLang();
   var grid = document.getElementById('dealsGrid');
   var deals = filteredDeals();
   var countEl = document.getElementById('resultsCount');
@@ -205,6 +309,10 @@ function renderDeals() {
     var watched = isWatched(d.id);
     var watchLabel = lang === 'hu' ? (watched ? 'Figyelt' : 'Figyelés') : (watched ? 'Watching' : 'Watch');
     var viewLabel = lang === 'hu' ? 'Megnézem' : 'View Deal';
+    var stars = renderStars(d.rating);
+    var reviewsHtml = (stars && d.reviews)
+      ? '<div class="deal-reviews">' + stars + '<span class="deal-review-count">(' + Number(d.reviews).toLocaleString('hu-HU') + ')</span></div>'
+      : '';
     return '<div class="deal-card">'
       + (d.discount > 0 ? '<span class="deal-badge">-' + d.discount + '%</span>' : '')
       + (d.img
@@ -212,6 +320,7 @@ function renderDeals() {
         : '<div class="deal-img-placeholder"></div>')
       + '<div class="deal-store">' + d.store + '</div>'
       + '<div class="deal-name">' + d.name + '</div>'
+      + reviewsHtml
       + '<div class="deal-pricing">'
         + (d.price > 0 ? '<span class="deal-price">' + formatHUF(d.price) + '</span>' : '')
         + (d.original > d.price ? '<span class="deal-original">' + formatHUF(d.original) + '</span>' : '')
@@ -235,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var input = document.getElementById('searchInput');
   var meta = document.getElementById('searchMeta');
   var topbar = document.getElementById('resultsTopbar');
-  var lang = localStorage.getItem('pp_lang') || 'hu';
+  var lang = getLang();
 
   if (input) input.value = q;
   if (!q) {

@@ -3,7 +3,7 @@
 **Open source price comparison and deal tracker for Hungarian shoppers.**
 Search across electronics, watches, skincare, fashion, home, beauty, sports and more — all in one place.
 
-🌐 **Live site:** https://pricepulse-hu.vercel.app
+🌐 **Live site:** https://hu-deals-finder.vercel.app
 
 ---
 

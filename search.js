@@ -2,6 +2,8 @@
 
 var DEALS = [];
 var watchlist = JSON.parse(localStorage.getItem('pricepulse_watchlist') || '[]');
+var compareList = JSON.parse(localStorage.getItem('pp_compare') || '[]');
+var MAX_COMPARE = 4;
 var currentCategory = 'all';
 var currentSort = 'discount';
 var activeStores = [];
@@ -80,27 +82,23 @@ function parseResults(data) {
   }).filter(function(d) { return d.name && d.price > 0; });
 }
 
-// Brand: check known list first (whole-word match), then item.brand field, then first UPPERCASE-starting word in title
 function extractBrand(item) {
   var known = [
     'Apple','Samsung','Sony','LG','Philips','Bosch','Dyson','Nike','Adidas','Puma','Reebok',
     'Casio','Seiko','Tissot','Fossil','Garmin','Suunto','Polar','Fitbit',
-    'CeraVe','The Ordinary','COSRX','Nivea','Garnier','Neutrogena','L\'Oréal','Maybelline','Clinique',
+    'CeraVe','The Ordinary','COSRX','Nivea','Garnier','Neutrogena',"L'Oréal",'Maybelline','Clinique',
     'Huawei','Xiaomi','Lenovo','Asus','Dell','HP','Acer','MSI','Razer',
-    'Nespresso','Tefal','Rowenta','De Longhi','Philips','Moulinex','Bosch',
+    'Nespresso','Tefal','Rowenta','De Longhi','Moulinex',
     'Swatch','Hamilton','Longines','TAG Heuer','Omega','Rolex','Citizen','Orient','Invicta',
-    'Ikea','Zara','H&M','Nike','New Balance','Converse','Vans','Timberland',
-    'Dyson','iRobot','Karcher','Black+Decker','Makita','Bosch','DeWalt'
+    'Ikea','Zara','H&M','New Balance','Converse','Vans','Timberland',
+    'iRobot','Karcher','Black+Decker','Makita','DeWalt'
   ];
   var title = (item.title || '');
   var titleLow = title.toLowerCase();
-  // 1. SerpAPI sometimes returns item.brand directly
   if (item.brand && item.brand.trim()) return item.brand.trim();
-  // 2. Known brand list (word-boundary check)
   for (var i = 0; i < known.length; i++) {
     if (titleLow.includes(known[i].toLowerCase())) return known[i];
   }
-  // 3. First token that starts with uppercase and is >2 chars and not a number
   var tokens = title.split(/\s+/);
   for (var j = 0; j < Math.min(tokens.length, 4); j++) {
     var t = tokens[j].replace(/[^a-zA-Z0-9\-+]/g, '');
@@ -109,9 +107,7 @@ function extractBrand(item) {
   return 'Egyéb';
 }
 
-// Category: use SerpAPI product_type > extensions > title keywords
 function mapCat(item) {
-  // Build a string from all available category signals
   var signals = [
     (item.product_type || ''),
     (item.extensions ? item.extensions.join(' ') : ''),
@@ -119,59 +115,41 @@ function mapCat(item) {
     (item.category || '')
   ].join(' ').toLowerCase();
 
-  // Electronics — check before watches to avoid 'smartwatch' falling into watches only
   if (/laptop|notebook|computer|pc |desktop|monitor|television|smart tv|\btv\b|tablet|phone|smartphone|headphone|earphone|earbuds|speaker|camera|printer|router|gaming|console|playstation|xbox|nintendo|processor|graphics card|ssd|hdd|ram|elektronik/.test(signals)) return 'electronics';
-  // Watches — after electronics so smartwatch can match here if no electronics signal
   if (/\bwatch\b|karóra|kar\s*óra|wristwatch|chronograph|timepiece|óramű|pocket watch|smartwatch/.test(signals)) return 'watches';
-  // Skincare
   if (/serum|moisturizer|moisturiser|sunscreen|spf|toner|cleanser|face wash|eye cream|retinol|hyaluronic|niacinamide|skincare|skin care|bőrápoló|arcápoló|arckrém/.test(signals)) return 'skincare';
-  // Beauty / makeup / fragrance
   if (/perfume|parfum|fragrance|eau de|cologne|lipstick|foundation|mascara|concealer|blush|eyeshadow|makeup|make-up|szépség|illatszer|smink/.test(signals)) return 'beauty';
-  // Fashion
   if (/shoes|shoe|sneaker|boot|sandal|trainer|cipő|clothing|clothes|jacket|coat|dress|shirt|trouser|jeans|skirt|hoodie|divat|fashion|apparel/.test(signals)) return 'fashion';
-  // Sports
   if (/sport|fitness|gym|bicycle|bike|cycling|running|football|basketball|tennis|swimming|yoga|treadmill|kerékpár|futó|edzés/.test(signals)) return 'sports';
-  // Home
   if (/furniture|sofa|chair|table|bed|mattress|lamp|carpet|rug|kitchen|cookware|vacuum|washing machine|dishwasher|fridge|oven|otthon|bútor|lámpa|konyha/.test(signals)) return 'home';
-
   return 'other';
 }
 
 function buildSidebarFilters() {
-  // Stores
   var stores = [...new Set(DEALS.map(function(d){ return d.store; }))].sort();
   var storeList = document.getElementById('storeList');
   if (storeList) {
-    if (stores.length) {
-      storeList.innerHTML = stores.map(function(s) {
-        return '<label class="check-label"><input type="checkbox" value="' + s + '" checked onchange="updateStoreFilter()"><span>' + s + '</span></label>';
-      }).join('');
-    } else {
-      storeList.innerHTML = '<p class="filter-empty-hint">Nincs elérhető bolt</p>';
-    }
+    storeList.innerHTML = stores.length
+      ? stores.map(function(s) {
+          return '<label class="check-label"><input type="checkbox" value="' + s + '" checked onchange="updateStoreFilter()"><span>' + s + '</span></label>';
+        }).join('')
+      : '<p class="filter-empty-hint">Nincs elérhető bolt</p>';
     activeStores = stores.slice();
   }
 
-  // Brands — deduplicate and exclude 'Egyéb' from list if too dominant
   var brandCounts = {};
   DEALS.forEach(function(d) { brandCounts[d.brand] = (brandCounts[d.brand] || 0) + 1; });
-  var brands = Object.keys(brandCounts).sort(function(a,b){
-    return brandCounts[b] - brandCounts[a]; // sort by frequency
-  });
+  var brands = Object.keys(brandCounts).sort(function(a,b){ return brandCounts[b] - brandCounts[a]; });
   var brandList = document.getElementById('brandList');
   if (brandList) {
-    if (brands.length) {
-      brandList.innerHTML = brands.map(function(b) {
-        return '<label class="check-label"><input type="checkbox" value="' + b + '" checked onchange="updateBrandFilter()">'
-          + '<span>' + b + ' <span class="filter-count">(' + brandCounts[b] + ')</span></span></label>';
-      }).join('');
-    } else {
-      brandList.innerHTML = '<p class="filter-empty-hint">Nincs elérhető márka</p>';
-    }
+    brandList.innerHTML = brands.length
+      ? brands.map(function(b) {
+          return '<label class="check-label"><input type="checkbox" value="' + b + '" checked onchange="updateBrandFilter()"><span>' + b + ' <span class="filter-count">(' + brandCounts[b] + ')</span></span></label>';
+        }).join('')
+      : '<p class="filter-empty-hint">Nincs elérhető márka</p>';
     activeBrands = brands.slice();
   }
 
-  // Price range
   var prices = DEALS.map(function(d){ return d.price; }).filter(Boolean);
   if (prices.length) {
     var minP = Math.floor(Math.min.apply(null, prices) / 100) * 100;
@@ -217,6 +195,52 @@ function isWatched(id) {
   return watchlist.some(function(w) { return w.id === id; });
 }
 
+function isCompared(id) {
+  return compareList.some(function(c) { return c.id === id; });
+}
+
+function toggleCompare(id) {
+  var lang = getLang();
+  if (isCompared(id)) {
+    compareList = compareList.filter(function(c) { return c.id !== id; });
+  } else {
+    if (compareList.length >= MAX_COMPARE) {
+      alert(lang === 'hu' ? 'Legfeljebb 4 terméket hasonlíthatsz össze.' : 'You can compare up to 4 products.');
+      return;
+    }
+    var deal = DEALS.find(function(d) { return d.id === id; });
+    if (deal) compareList.push(Object.assign({}, deal));
+  }
+  localStorage.setItem('pp_compare', JSON.stringify(compareList));
+  renderDeals();
+  syncCompareTray();
+}
+
+function syncCompareTray() {
+  var lang = getLang();
+  var tray = document.getElementById('compareTray');
+  var trayCount = document.getElementById('compareTrayCount');
+  var trayItems = document.getElementById('compareTrayItems');
+  var trayBtn = document.getElementById('compareTrayBtn');
+  if (!tray) return;
+  var n = compareList.length;
+  if (n === 0) {
+    tray.classList.remove('tray-visible');
+    return;
+  }
+  tray.classList.add('tray-visible');
+  trayCount.textContent = n;
+  trayBtn.textContent = lang === 'hu' ? 'Összehasonlítás (' + n + ')' : 'Compare (' + n + ')';
+  trayItems.innerHTML = compareList.map(function(c) {
+    return '<div class="tray-chip">'
+      + '<span class="tray-chip-name">' + c.name.substring(0, 28) + (c.name.length > 28 ? '…' : '') + '</span>'
+      + '<button class="tray-chip-remove" onclick="toggleCompare(' + c.id + ')" title="Eltávolítás">×</button>'
+      + '</div>';
+  }).join('');
+}
+
+window.syncCompareTray = syncCompareTray;
+
 async function toggleWatch(id) {
   if (isWatched(id)) {
     watchlist = watchlist.filter(function(w) { return w.id !== id; });
@@ -226,22 +250,16 @@ async function toggleWatch(id) {
   }
   var deal = DEALS.find(function(d) { return d.id === id; });
   if (!deal) return;
-
-  // Optimistically add to watchlist immediately
   var entry = Object.assign({}, deal, { addedAt: new Date().toISOString(), priceHistory: null, detailLoading: true });
   watchlist.push(entry);
   localStorage.setItem('pricepulse_watchlist', JSON.stringify(watchlist));
   renderDeals();
-
-  // Fetch real price history + reviews in background if product_id available
   if (deal.product_id) {
     var detail = await fetchProductDetail(deal.product_id);
     if (detail) {
       var idx = watchlist.findIndex(function(w){ return w.id === id; });
       if (idx !== -1) {
-        if (detail.priceHistory && detail.priceHistory.length > 0) {
-          watchlist[idx].priceHistory = detail.priceHistory;
-        }
+        if (detail.priceHistory && detail.priceHistory.length > 0) watchlist[idx].priceHistory = detail.priceHistory;
         if (detail.reviews) {
           watchlist[idx].rating = detail.reviews.rating || watchlist[idx].rating;
           watchlist[idx].reviews = detail.reviews.reviews || watchlist[idx].reviews;
@@ -269,7 +287,6 @@ function sortDeals() {
 function filteredDeals() {
   var inStockOnly = document.getElementById('inStockOnly') && document.getElementById('inStockOnly').checked;
   var d = DEALS.slice();
-  // Category: 'other' items show under ALL but not under a specific category
   if (currentCategory !== 'all') {
     d = d.filter(function(x) { return x.category === currentCategory; });
   }
@@ -286,12 +303,13 @@ function filteredDeals() {
 function renderStars(rating) {
   if (!rating) return '';
   var full = Math.floor(rating);
-  var half = rating - full >= 0.4;
+  var half = (rating - full) >= 0.4;
   var empty = 5 - full - (half ? 1 : 0);
   var s = '';
-  for (var i = 0; i < full; i++) s += '<svg class="star full" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#f59e0b"/></svg>';
-  if (half) s += '<svg class="star half" viewBox="0 0 16 16"><defs><linearGradient id="hg"><stop offset="50%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="url(#hg)"/></svg>';
-  for (var j = 0; j < empty; j++) s += '<svg class="star empty" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#d1d5db"/></svg>';
+  var uid = 'hg' + Math.round(rating * 10);
+  for (var i = 0; i < full; i++) s += '<svg class="star" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#f59e0b"/></svg>';
+  if (half) s += '<svg class="star" viewBox="0 0 16 16"><defs><linearGradient id="' + uid + '"><stop offset="50%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="url(#' + uid + ')"/></svg>';
+  for (var j = 0; j < empty; j++) s += '<svg class="star" viewBox="0 0 16 16"><path d="M8 1l2.06 4.18L15 6.18l-3.5 3.41.83 4.82L8 12.1l-4.33 2.31.83-4.82L1 6.18l4.94-.99z" fill="#d1d5db"/></svg>';
   return s;
 }
 
@@ -307,7 +325,9 @@ function renderDeals() {
   }
   grid.innerHTML = deals.map(function(d) {
     var watched = isWatched(d.id);
+    var compared = isCompared(d.id);
     var watchLabel = lang === 'hu' ? (watched ? 'Figyelt' : 'Figyelés') : (watched ? 'Watching' : 'Watch');
+    var cmpLabel = lang === 'hu' ? (compared ? '✓ Összeh.' : '+ Összeh.') : (compared ? '✓ Compare' : '+ Compare');
     var viewLabel = lang === 'hu' ? 'Megnézem' : 'View Deal';
     var stars = renderStars(d.rating);
     var reviewsHtml = (stars && d.reviews)
@@ -329,6 +349,7 @@ function renderDeals() {
         + '<a href="' + d.url + '" target="_blank" rel="noopener noreferrer" class="btn-secondary">' + viewLabel + '</a>'
         + '<button class="btn-watch' + (watched ? ' watching' : '') + '" onclick="toggleWatch(' + d.id + ')">' + watchLabel + '</button>'
       + '</div>'
+      + '<button class="btn-compare' + (compared ? ' comparing' : '') + '" onclick="toggleCompare(' + d.id + ')">' + cmpLabel + '</button>'
     + '</div>';
   }).join('');
 }
@@ -361,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (topbar) topbar.style.display = 'flex';
     buildSidebarFilters();
     renderDeals();
+    syncCompareTray();
   }).catch(function(err) {
     console.error('[PricePulse]', err);
     if (meta) meta.textContent = lang === 'hu' ? 'Hiba a betöltés során.' : 'Could not load results.';

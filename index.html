@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HU Deals — Find the Best Prices in Hungary</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">HU<span>Deals</span></a>
+      <div class="nav-links">
+        <a href="#deals" class="nav-link">Deals</a>
+        <a href="#watchlist" class="nav-link">Watchlist</a>
+        <a href="#stores" class="nav-link">Stores</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">🇭🇺 Hungary Only</div>
+      <h1 class="hero-title">Find the best tech deals<br>across Hungarian shops</h1>
+      <p class="hero-sub">Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more — all in one place.</p>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for a product…" />
+        <button onclick="searchDeals()" class="btn-primary">Search</button>
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+        <button class="filter-btn" onclick="filterCategory('laptops', this)">Laptops</button>
+        <button class="filter-btn" onclick="filterCategory('phones', this)">Phones</button>
+        <button class="filter-btn" onclick="filterCategory('tvs', this)">TVs</button>
+        <button class="filter-btn" onclick="filterCategory('audio', this)">Audio</button>
+        <button class="filter-btn" onclick="filterCategory('gaming', this)">Gaming</button>
+        <button class="filter-btn" onclick="filterCategory('appliances', this)">Appliances</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- STORE BADGES -->
+  <section id="stores" class="stores-section">
+    <div class="container">
+      <h2 class="section-title">Tracked stores</h2>
+      <div class="stores-grid">
+        <div class="store-badge"><span class="store-dot green"></span>Alza.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>MediaMarkt.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>eMAG.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>Extreme Digital</div>
+        <div class="store-badge"><span class="store-dot green"></span>Árukereső.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>iStyle.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>Euronics.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>Notebookspecialista</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEALS GRID -->
+  <section id="deals" class="deals-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Today's best deals</h2>
+        <div class="sort-row">
+          <label>Sort by:</label>
+          <select id="sortSelect" onchange="sortDeals()">
+            <option value="discount">Biggest discount</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="deals-grid" id="dealsGrid"></div>
+    </div>
+  </section>
+
+  <!-- WATCHLIST -->
+  <section id="watchlist" class="watchlist-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Your watchlist</h2>
+        <span class="watchlist-count" id="watchlistCount">0 items</span>
+      </div>
+      <p class="watchlist-hint">Add products from above to track their prices. We'll show you when the price drops.</p>
+      <div class="watchlist-grid" id="watchlistGrid">
+        <div class="watchlist-empty" id="watchlistEmpty">
+          <div class="empty-icon">📋</div>
+          <p>Your watchlist is empty.<br>Click "Watch" on any deal to start tracking.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="nav-logo">HU<span>Deals</span></span>
+      <p>Prices are fetched from public store listings. Not affiliated with any retailer.</p>
+      <p class="footer-small">Built for Hungarian shoppers · Data refreshed every 6h</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

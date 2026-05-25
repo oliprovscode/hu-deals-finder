@@ -26,7 +26,7 @@
   <div class="search-page-header">
     <div class="container">
       <form class="search-bar" onsubmit="reSearch(event)">
-        <input type="text" id="searchInput" placeholder="Search products, brands..." autocomplete="off" />
+        <input type="text" id="searchInput" placeholder="Search any product, brand..." autocomplete="off" />
         <button type="submit" class="btn-primary">Search</button>
       </form>
       <div class="search-meta" id="searchMeta"></div>
@@ -38,12 +38,13 @@
       <div class="results-toolbar" id="resultsToolbar" style="display:none">
         <div class="filter-row" id="filterRow">
           <button class="filter-btn active" onclick="filterCategory('all',this)">All</button>
-          <button class="filter-btn" onclick="filterCategory('laptops',this)">Laptops</button>
-          <button class="filter-btn" onclick="filterCategory('phones',this)">Phones</button>
-          <button class="filter-btn" onclick="filterCategory('tvs',this)">TVs</button>
-          <button class="filter-btn" onclick="filterCategory('audio',this)">Audio</button>
-          <button class="filter-btn" onclick="filterCategory('gaming',this)">Gaming</button>
-          <button class="filter-btn" onclick="filterCategory('appliances',this)">Appliances</button>
+          <button class="filter-btn" onclick="filterCategory('electronics',this)">Electronics</button>
+          <button class="filter-btn" onclick="filterCategory('watches',this)">Watches</button>
+          <button class="filter-btn" onclick="filterCategory('skincare',this)">Skincare</button>
+          <button class="filter-btn" onclick="filterCategory('fashion',this)">Fashion</button>
+          <button class="filter-btn" onclick="filterCategory('beauty',this)">Beauty</button>
+          <button class="filter-btn" onclick="filterCategory('home',this)">Home</button>
+          <button class="filter-btn" onclick="filterCategory('sports',this)">Sports</button>
         </div>
         <div class="sort-row">
           <label for="sortSelect">Sort:</label>

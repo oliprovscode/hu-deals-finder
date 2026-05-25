@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PricePulse HU - Best Tech & Electronics Deals in Hungary</title>
-  <meta name="description" content="Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more Hungarian electronics stores. Find the biggest discounts updated daily. Free and open source." />
-  <meta name="keywords" content="Hungary deals, akcio, Alza Hungary, MediaMarkt Hungary, eMAG deals, electronics price comparison, tech deals HU" />
+  <title>PricePulse HU - Best Deals in Hungary</title>
+  <meta name="description" content="Compare prices from Hungarian shops across electronics, watches, skincare, fashion, home and more. Find the biggest discounts updated daily. Free and open source." />
+  <meta name="keywords" content="Hungary deals, akcio, Alza Hungary, MediaMarkt Hungary, eMAG deals, price comparison HU, watches Hungary, skincare Hungary, Chrono24" />
   <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="PricePulse HU - Tech Deals in Hungary" />
-  <meta property="og:description" content="Open source price comparison for Hungarian electronics shops." />
+  <meta property="og:title" content="PricePulse HU - Best Deals in Hungary" />
+  <meta property="og:description" content="Open source price comparison for Hungarian shops — electronics, watches, skincare, fashion and more." />
   <meta property="og:type" content="website" />
   <link rel="canonical" href="https://pricepulse-hu.vercel.app/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,22 +36,41 @@
         <span class="hero-badge">Hungary Only</span>
         <a href="https://github.com/oliprovscode/hu-deals-finder" target="_blank" rel="noopener" class="oss-badge">Open Source</a>
       </div>
-      <h1 class="hero-title">Find the best tech deals<br>across Hungarian shops</h1>
-      <p class="hero-sub">Compare prices from Alza, MediaMarkt, eMAG, Extreme Digital and more. Free, open source, no tracking.</p>
+      <h1 class="hero-title">Find the best deals<br>across Hungarian shops</h1>
+      <p class="hero-sub">Compare prices on electronics, watches, skincare, fashion, home goods and more. Free, open source, no tracking.</p>
       <form class="search-bar" onsubmit="goSearch(event)">
-        <input type="text" id="searchInput" placeholder="Search products, brands..." autocomplete="off" />
+        <input type="text" id="searchInput" placeholder="Search any product, brand..." autocomplete="off" />
         <button type="submit" class="btn-primary">Search</button>
       </form>
       <div class="search-suggestions">
-        <span class="suggestion-label">Try:</span>
-        <a class="suggestion" href="/search.html?q=iPhone">iPhone</a>
-        <a class="suggestion" href="/search.html?q=laptop">Laptop</a>
-        <a class="suggestion" href="/search.html?q=Sony+headphones">Sony headphones</a>
+        <span class="suggestion-label">Popular:</span>
+        <a class="suggestion" href="/search.html?q=Casio+watch">Casio watch</a>
+        <a class="suggestion" href="/search.html?q=iPhone+15">iPhone 15</a>
+        <a class="suggestion" href="/search.html?q=CeraVe+skincare">CeraVe skincare</a>
+        <a class="suggestion" href="/search.html?q=Nike+cip%C5%91">Nike cipő</a>
         <a class="suggestion" href="/search.html?q=Samsung+TV">Samsung TV</a>
-        <a class="suggestion" href="/search.html?q=PlayStation">PlayStation</a>
+        <a class="suggestion" href="/search.html?q=Dyson">Dyson</a>
+        <a class="suggestion" href="/search.html?q=Seiko+%C3%B3ra">Seiko óra</a>
+        <a class="suggestion" href="/search.html?q=The+Ordinary">The Ordinary</a>
       </div>
     </div>
   </header>
+
+  <section class="categories-section">
+    <div class="container">
+      <h2 class="section-title">Browse categories</h2>
+      <div class="cat-grid">
+        <a href="/search.html?q=laptop+akcio" class="cat-card"><span class="cat-icon">💻</span><span>Electronics</span></a>
+        <a href="/search.html?q=kar%C3%B3ra+%C3%B3ra" class="cat-card"><span class="cat-icon">⌚</span><span>Watches</span></a>
+        <a href="/search.html?q=skincare+arc%C3%A1pol%C3%B3" class="cat-card"><span class="cat-icon">✨</span><span>Skincare</span></a>
+        <a href="/search.html?q=Nike+Adidas+cip%C5%91" class="cat-card"><span class="cat-icon">👟</span><span>Fashion</span></a>
+        <a href="/search.html?q=parf%C3%BCm+illatszer" class="cat-card"><span class="cat-icon">🧴</span><span>Beauty</span></a>
+        <a href="/search.html?q=otthon+b%C3%BAtor+akcio" class="cat-card"><span class="cat-icon">🏠</span><span>Home</span></a>
+        <a href="/search.html?q=sport+fitness" class="cat-card"><span class="cat-icon">🏋️</span><span>Sports</span></a>
+        <a href="/search.html?q=j%C3%A1t%C3%A9k+gyerek" class="cat-card"><span class="cat-icon">🎮</span><span>Toys & Gaming</span></a>
+      </div>
+    </div>
+  </section>
 
   <section id="stores" class="stores-section">
     <div class="container">
@@ -61,10 +80,14 @@
         <div class="store-badge"><span class="store-dot green"></span>MediaMarkt.hu</div>
         <div class="store-badge"><span class="store-dot green"></span>eMAG.hu</div>
         <div class="store-badge"><span class="store-dot green"></span>Extreme Digital</div>
-        <div class="store-badge"><span class="store-dot green"></span>Arukereso.hu</div>
-        <div class="store-badge"><span class="store-dot yellow"></span>iStyle.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>eMAG Fashion</div>
+        <div class="store-badge"><span class="store-dot green"></span>Answear.hu</div>
+        <div class="store-badge"><span class="store-dot green"></span>Notino.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>Rossmann.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>Shopalike.hu</div>
         <div class="store-badge"><span class="store-dot yellow"></span>Euronics.hu</div>
-        <div class="store-badge"><span class="store-dot yellow"></span>Notebookspecialista</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>iStyle.hu</div>
+        <div class="store-badge"><span class="store-dot yellow"></span>Chrono24.hu</div>
       </div>
     </div>
   </section>
@@ -75,7 +98,7 @@
         <h2 class="section-title">Your watchlist</h2>
         <span class="watchlist-count" id="watchlistCount">0 items</span>
       </div>
-      <p class="watchlist-hint">Search for products and click Watch to track price changes.</p>
+      <p class="watchlist-hint">Search for any product and click Watch to track price changes.</p>
       <div class="watchlist-grid" id="watchlistGrid">
         <div class="watchlist-empty"><p>Your watchlist is empty. Search for a product and click Watch to start tracking.</p></div>
       </div>
@@ -93,8 +116,8 @@
         </a>
       </div>
       <div class="oss-stats">
-        <div class="oss-stat"><span class="stat-num">8</span><span class="stat-label">Stores tracked</span></div>
-        <div class="oss-stat"><span class="stat-num">Free</span><span class="stat-label">Always</span></div>
+        <div class="oss-stat"><span class="stat-num">12+</span><span class="stat-label">Stores tracked</span></div>
+        <div class="oss-stat"><span class="stat-num">All</span><span class="stat-label">Categories</span></div>
         <div class="oss-stat"><span class="stat-num">0</span><span class="stat-label">Trackers</span></div>
       </div>
     </div>
